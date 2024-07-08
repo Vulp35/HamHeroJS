@@ -14,6 +14,7 @@ client.commands = new Collection();
 const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath);
 
+// Dynamically retrieving all the command files in the command folder
 for (const folder of commandFolders) {
     const commandsPath = path.join(foldersPath, folder);
     const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
@@ -25,40 +26,23 @@ for (const folder of commandFolders) {
             client.commands.set(command.data.name, command);
         }  else {
             console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property and therfore was not loaded.`);
-        };
-    };
-};
-
-// Listener for Client#interactionCreate event. This executes code whenever the bot receives an interaction (not every interaction is a slash command).
-client.on(Events.InteractionCreate, async interaction => {
-    // Makes sure to only hand slash command interactions.
-    if (!interaction.isChatInputCommand()) return;
-
-    const command = interaction.client.commands.get(interaction.commandName);
-
-    if (!command) {
-        console.error(`No command matching ${interaction.commandName} was found.`);
-        return;
-    }
-
-    try {
-        await command.execute(interaction);
-    } catch (error) {
-        console.error(error);
-        if (interaction.replied || interaction.deferred) {
-            await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true});
-        } else {
-            await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true});
         }
     }
-});
+}
 
-// When the client is ready, run this code (only once).
-// The distinction between `client: Client<boolean>` and `readyClient: Client<true>` is important for TypeScript developers.
-// It makes some properties non-nullable.
-client.once(Events.ClientReady, readyClient => {
-	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
-});
+// Dynamically retrieving all the event files in the event folder
+const eventsPath = path.join(__dirname, 'events');
+const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
+
+for (const file of eventFiles) {
+    const filePath = path.join(eventsPath, file);
+    const event = require(filePath);
+    if (event.once) {
+        client.once(event.name, (...args) => event.execute(...args));
+    } else {
+        client.on(event.name, (...args) => event.execute(...args));
+    }
+}
 
 // Log in to Discord with your client's token
 client.login(token);
