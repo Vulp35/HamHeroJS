@@ -25,6 +25,7 @@ module.exports = {
             const newCommand = require(`./${command.data.name}.js`);
             interaction.client.commands.set(newCommand.data.name, newCommand);
             await interaction.reply(`Command \`${newCommand.data.name}\` was reloaded!`);
+            console.log(`Command ${newCommand.data.name} was reloaded!`)
         } catch (error) {
             console.error(error);
             await interaction.reply(`There was an error while reloading a command \`${command.data.name}\`:\n\`${error.message}\``);
