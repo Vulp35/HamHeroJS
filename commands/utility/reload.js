@@ -2,6 +2,7 @@ const { SlashCommandBuilder } = require('discord.js');
 const { execute } = require('./ping');
 
 module.exports = {
+    private: true,
     data: new SlashCommandBuilder()
         .setName('reload')
         .setDescription('Reloads a command.')
