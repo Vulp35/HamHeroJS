@@ -37,4 +37,6 @@ HamHeroJS is a information bot for Amateur Radio communities on Discord. The ori
 ### Features to add or keep in mind
 
 -   [ ] Make commands available via permissions
--   [ ] `/code` Needs to be refactored so it can be used on multiple servers without changing status on others
+-   [ ] `/code` Needs to be refactored so it can be used on multiple servers without changing status on others.
+-   [ ] `/repeater` should pull from a local file or be configurable via commands.
+-   [ ] Embeds color should be `#eb93b8` or `#5e4099` (Not sure where this one came from...)
